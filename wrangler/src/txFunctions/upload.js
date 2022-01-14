@@ -11,9 +11,11 @@ export default async ({ request, env }) => {
   const txFunctionFields = body.get('txFunctionFields')
   const txFunctionFieldsBuffer = txFunctionFields ? Buffer.from(txFunctionFields, 'base64') : Buffer.alloc(0)
 
-  // Test to ensure txFunctionFields is valid JSON
+   // Test to ensure txFunctionFields is valid JSON on upload.
   if (txFunctionFields)
-    JSON.parse(txFunctionFieldsBuffer.toString())
+    if (!JSON.parse(txFunctionFieldsBuffer.toString())){
+      throw 'json for txfunctionfields is not valid.'
+    }
 
   const txFunction = body.get('txFunction')
   const txFunctionBuffer = Buffer.from(txFunction)
