@@ -153,20 +153,23 @@ export default async ({ request, params, env }) => {
       stopwatch: watch,
     })
   }
+  try{
+    const transaction = new Transaction(xdr, Networks[STELLAR_NETWORK])
 
-  const transaction = new Transaction(xdr, Networks[STELLAR_NETWORK])
+    const txFunctionSignerKeypair = Keypair.fromSecret(txFunctionSignerSecret)
+    const txFunctionSignature = txFunctionSignerKeypair.sign(transaction.hash()).toString('base64')
 
-  const txFunctionSignerKeypair = Keypair.fromSecret(txFunctionSignerSecret)
-  const txFunctionSignature = txFunctionSignerKeypair.sign(transaction.hash()).toString('base64')
-
-  return response.json({
-    xdr,
-    signer: txFunctionSignerPublicKey,
-    signature: txFunctionSignature,
-    cost,
-    feeSponsor,
-    feeBalanceRemaining,
-  }, {
-    stopwatch: watch,
-  })
+    return response.json({
+      xdr,
+      signer: txFunctionSignerPublicKey,
+      signature: txFunctionSignature,
+      cost,
+      feeSponsor,
+      feeBalanceRemaining,
+    }, {
+      stopwatch: watch,
+    })
+  }catch(e){
+    throw 'the transaction could not be built, the xdr is invalid.'
+  }
 }
