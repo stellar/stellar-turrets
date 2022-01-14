@@ -42,8 +42,8 @@ export default async ({ request, env }) => {
   try {
     const txFunctionFee = body.get('txFunctionFee')
 
-    // throws if payment fails
-    await processFeePayment(env, txFunctionFee, cost);
+    // throws if payment fails, if the fee is invalid, if the fee is too large or too small. Fixes STRI 4
+    await processFeePayment(env, txFunctionFee, cost, cost);
 
   } catch (err) {
     return response.json({
