@@ -1,7 +1,14 @@
 {
+  "name": "stellar-turrets-api",
+  "description": "Stellar Turrets Reference API Designed for Cloudflare Workers. Support on discord at https://discord.gg/s7Sc8JX6MS",
   "private": true,
   "version": "0.0.2",
   "module": "./dist/shim.mjs",
+  "author": "Stellar Turrets Team",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/stellar/stellar-turrets/issues"
+  },
   "scripts": {
     "build": "webpack",
     "deploy": "wrangler publish",
@@ -19,24 +26,22 @@
     "cfw-easy-utils": "^1.0.2",
     "lodash-es": "^4.17.21",
     "moment": "^2.29.1",
-    "run-script-os": "^1.1.6",
     "sha.js": "^2.4.11",
     "stellar-base": "^7.0.0",
     "tiny-request-router": "^1.2.2"
   },
   "devDependencies": {
+    "envdist": "^1.0.14",
+    "path": "^0.12.7",
+    "run-script-os": "^1.1.6",
     "@babel/core": "^7.15.5",
     "@babel/plugin-proposal-optional-chaining": "^7.14.5",
     "@babel/preset-env": "^7.15.6",
     "babel-loader": "^8.2.2",
     "copy-webpack-plugin": "^10.2.0",
-    "envdist": "^1.0.14",
     "esbuild-loader": "^2.18.0",
     "git-revision-webpack-plugin": "^5.0.0",
-    "path": "^0.12.7",
-    "terser-webpack-plugin": "^5.2.4",
     "webpack": "^5.52.1",
-    "webpack-bundle-analyzer": "^4.5.0",
     "webpack-cli": "^4.8.0"
   }
 }
