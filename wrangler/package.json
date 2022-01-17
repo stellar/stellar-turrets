@@ -5,7 +5,7 @@
   "scripts": {
     "build": "webpack",
     "deploy": "wrangler publish",
-    "deploy:alpha": "wrangler publish --env alpha",
+    "deploy:public": "wrangler publish --env public",
     "init": "run-script-os",
     "init:darwin:linux": "export $(cat .env|tr -d \"[:blank:]\"|xargs) && envsubst < wrangler.toml.dist > wrangler.toml",
     "init:win32": "echo 'running in windows please run in linux'",
