@@ -1,9 +1,9 @@
 const path = require('path')
 const webpack = require('webpack')
-const TerserPlugin = require('terser-webpack-plugin')
+//const TerserPlugin = require('terser-webpack-plugin')
 const CopyPlugin = require('copy-webpack-plugin')
 const { GitRevisionPlugin } = require('git-revision-webpack-plugin')
-
+const { ESBuildMinifyPlugin } = require('esbuild-loader')
 const pkg = require('./package.json')
 
 const gitRevisionPlugin = new GitRevisionPlugin()
@@ -19,7 +19,11 @@ module.exports = {
   },
   optimization: {
     minimize: true,
-    minimizer: [new TerserPlugin()],
+    minimizer: [
+      new ESBuildMinifyPlugin({
+        target: 'ESNext'
+      })
+    ]
   },
   module: {
     rules: [

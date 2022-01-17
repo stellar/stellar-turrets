@@ -1,6 +1,6 @@
 {
   "private": true,
-  "version": "0.0.1",
+  "version": "0.0.2",
   "module": "./dist/shim.mjs",
   "scripts": {
     "build": "webpack",
@@ -17,11 +17,11 @@
     "bluebird": "^3.7.2",
     "buffer": "^6.0.3",
     "cfw-easy-utils": "^1.0.2",
-    "lodash": "^4.17.21",
+    "lodash-es": "^4.17.21",
     "moment": "^2.29.1",
     "run-script-os": "^1.1.6",
     "sha.js": "^2.4.11",
-    "stellar-base": "^6.0.2",
+    "stellar-base": "^7.0.0",
     "tiny-request-router": "^1.2.2"
   },
   "devDependencies": {
@@ -29,12 +29,14 @@
     "@babel/plugin-proposal-optional-chaining": "^7.14.5",
     "@babel/preset-env": "^7.15.6",
     "babel-loader": "^8.2.2",
-    "copy-webpack-plugin": "^9.0.1",
+    "copy-webpack-plugin": "^10.2.0",
     "envdist": "^1.0.14",
+    "esbuild-loader": "^2.18.0",
     "git-revision-webpack-plugin": "^5.0.0",
     "path": "^0.12.7",
     "terser-webpack-plugin": "^5.2.4",
     "webpack": "^5.52.1",
+    "webpack-bundle-analyzer": "^4.5.0",
     "webpack-cli": "^4.8.0"
   }
 }

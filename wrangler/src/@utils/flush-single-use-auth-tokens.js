@@ -1,6 +1,7 @@
 import { response } from 'cfw-easy-utils'
 import moment from 'moment'
-import { groupBy, map } from 'lodash'
+import { groupBy } from 'lodash-es'
+import { map } from 'lodash-es'
 import { handleResponse } from './fetch'
 import Bluebird from 'bluebird'
 

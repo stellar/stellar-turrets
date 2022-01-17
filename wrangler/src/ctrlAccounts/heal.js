@@ -1,6 +1,10 @@
 import { response } from 'cfw-easy-utils'
 import { Keypair, TransactionBuilder, Networks, BASE_FEE, Operation, Account } from 'stellar-base'
-import { map, find, compact, intersection, chain } from 'lodash'
+import { chain } from '../@utils/expchain'
+import { map } from 'lodash-es'
+import { find } from 'lodash-es'
+import { compact } from 'lodash-es'
+import { intersection } from 'lodash-es'
 import Bluebird from 'bluebird'
 import { parse } from '@iarna/toml'
 
