@@ -13,9 +13,7 @@
     "build": "webpack",
     "deploy": "wrangler publish",
     "deploy:public": "wrangler publish --env public",
-    "init": "run-script-os",
-    "init:darwin:linux": "export $(cat .env|tr -d \"[:blank:]\"|xargs) && envsubst < wrangler.toml.dist > wrangler.toml",
-    "init:win32": "echo 'running in windows please run in linux'",
+    "init": "export $(cat .env|tr -d \"[:blank:]\"|xargs) && envsubst < wrangler.toml.dist > wrangler.toml",
     "preinit": "[ \"${CI}\" = true ] && npx envdist -e || npx envdist"
   },
   "dependencies": {
@@ -33,7 +31,6 @@
   "devDependencies": {
     "envdist": "^1.0.14",
     "path": "^0.12.7",
-    "run-script-os": "^1.1.6",
     "@babel/core": "^7.15.5",
     "@babel/plugin-proposal-optional-chaining": "^7.14.5",
     "@babel/preset-env": "^7.15.6",
