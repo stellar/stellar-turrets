@@ -18,7 +18,7 @@ There are two apps you need to deploy one in [`/serverless](#AWS-serverless) and
 
 `npm install -g @cloudflare/wrangler` (you don't need a global install, but i find it convenient.)
 
-run `wrangler login` or `wrangler config`
+run `wrangler login` 
 
 For the next step you will need to have a number of values from your CloudFlare account. Some basic info on obtaining these values is below.
 
