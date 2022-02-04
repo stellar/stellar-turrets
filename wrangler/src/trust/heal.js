@@ -10,6 +10,6 @@ export default async ({ request, env }) => {
     functionhash 
   } = await request.json()
   
-  healresponse = await heal(sourceaccount, oldturret, newturret, functionhash)
+  const healresponse = await heal(sourceaccount, oldturret, newturret, functionhash)
   return response.json(healresponse)
 }
