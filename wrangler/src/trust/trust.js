@@ -154,13 +154,13 @@ export async function getSequenceNumber(pubkey){
  * @param turret - the address of the turret you want to check for trust
  * @returns A boolean value.
  */
-export async function checkLocalQuorem(turret) {
-    const localquorem = localtoml()
+ export async function checkLocalQuorem(turret) {
+    const localquorem = localtoml({env})
     try{
-        const thetoml = parse(localquorem).TSS.TURRETS
+        const thetoml = parse(localquorem).TURRETS
         const quorem = []
         for (const each in thetoml){
-            quorem.push(thetoml[each])
+            quorem.push(thetoml[each].PUBLIC_KEY)
         }
         if(quorem.includes(turret))
             return true
