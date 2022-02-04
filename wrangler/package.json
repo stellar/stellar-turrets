@@ -27,7 +27,8 @@
     "moment": "^2.29.1",
     "sha.js": "^2.4.11",
     "stellar-base": "^7.0.0",
-    "tiny-request-router": "^1.2.2"
+    "tiny-request-router": "^1.2.2",
+    "toml": "^3.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.15.5",
