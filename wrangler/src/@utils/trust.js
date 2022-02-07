@@ -2,12 +2,11 @@ import {
   Keypair,
   TransactionBuilder,
   Networks,
-  BASE_FEE,
   Operation,
   Account,
 } from 'stellar-base';
 import { parse } from 'toml';
-import { loadAccount } from '../@utils/stellar-sdk-utils';
+import { loadAccount } from './stellar-sdk-utils';
 import localtoml from '../turret/toml';
 
 export const TURRET_DATA_KEY = (turretAccountId) => `turret.${turretAccountId}`;

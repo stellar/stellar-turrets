@@ -1,15 +1,14 @@
 import { response } from 'cfw-easy-utils'
-import { heal } from 'trust.js'
+import { heal } from '../@utils/trust'
 
 export default async ({ request, env }) => {
-  const { TX_FUNCTIONS, TURRET_ADDRESS, STELLAR_NETWORK, HORIZON_URL } = env
-  const { 
+  const {
     sourceaccount,
     oldturret,
     newturret,
-    functionhash 
+    functionhash
   } = await request.json()
-  
+
   const healresponse = await heal(sourceaccount, oldturret, newturret, functionhash)
   return response.json(healresponse)
 }

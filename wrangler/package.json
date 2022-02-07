@@ -1,5 +1,5 @@
 {
-  "name": "stellar-turrets-api",
+  "name": "stellar-turrets-wrangler",
   "description": "Stellar Turrets Reference API Designed for Cloudflare Workers. Support on discord at https://discord.gg/s7Sc8JX6MS",
   "private": true,
   "version": "0.0.2",

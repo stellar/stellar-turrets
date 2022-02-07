@@ -16,26 +16,26 @@ import txFunctionsRun from './txFunctions/run'
 import txFeesGet from './txFees/get'
 import txFeesPay from './txFees/pay'
 
-import healSourceAccount from './trust/heal'
+import healControlAccount from './ctrlAccounts/heal'
 
 const router = new Router()
 
 router
-.get('/', turretDetails)
-.get('/.well-known/stellar.toml', turretToml)
+  .get('/', turretDetails)
+  .get('/.well-known/stellar.toml', turretToml)
 
 router
-.post('/tx-functions', txFunctionsUpload)
-.get('/tx-functions', txFunctionsList)
-.get('/tx-functions/:txFunctionHash', txFunctionsGet)
-.post('/tx-functions/:txFunctionHash', txFunctionsRun)
+  .post('/tx-functions', txFunctionsUpload)
+  .get('/tx-functions', txFunctionsList)
+  .get('/tx-functions/:txFunctionHash', txFunctionsGet)
+  .post('/tx-functions/:txFunctionHash', txFunctionsRun)
 
 router
-.get('/tx-fees', txFeesGet)
-.post('/tx-fees/:publicKey', txFeesPay)
+  .get('/tx-fees', txFeesGet)
+  .post('/tx-fees/:publicKey', txFeesPay)
 
 router
-.put('/trust/heal', healSourceAccount)
+  .put('/ctrl-account', healControlAccount)
 
 // router
 // .get('/test', flushSingleUseAuthTokens)
@@ -88,17 +88,17 @@ async function handleRequest(request, env, ctx) {
       return routerResponse
     }
 
-    throw {status: 404}
+    throw { status: 404 }
   }
 
-  catch(err) {
+  catch (err) {
     return parseError(err)
   }
 }
 
 function handleScheduled(metadata, env, ctx) {
   return Promise.all([
-    flushSingleUseAuthTokens({metadata, env, ctx})
+    flushSingleUseAuthTokens({ metadata, env, ctx })
   ])
 }
 
