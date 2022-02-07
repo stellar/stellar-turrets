@@ -29,7 +29,8 @@ module.exports = {
   },
   externals: [
     nodeExternals(),
-    /aws-sdk/
+    /aws-sdk/,
+    /sodium-native/
   ],
   module: {
     rules: [

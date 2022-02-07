@@ -23,6 +23,7 @@
 | https://tss-wrangler.yarvis.workers.dev |  | [John Ciprian](https://github.com/jarvisuser90) |  |
 | https://tsstestnet.s3x.workers.dev | | [Silence](https://github.com/silence48/) | Discord: Silence#8008 |
 | https://tss-wrangler.mnky.workers.dev |  | [MNKY](https://github.com/nbarthel) |  |
+| https://tss-wrangler.btfdev.workers.dev | [blocktimefinancial.com](https://blocktimefinancial.com/) |  | lou@blocktimefinancial.com |
 
 # \*PUBLIC
 
