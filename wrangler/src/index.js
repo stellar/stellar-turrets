@@ -16,7 +16,7 @@ import txFunctionsRun from './txFunctions/run'
 import txFeesGet from './txFees/get'
 import txFeesPay from './txFees/pay'
 
-import ctrlAccountsHeal from './ctrlAccounts/heal'
+import healSourceAccount from './trust/heal'
 
 const router = new Router()
 
@@ -35,7 +35,7 @@ router
 .post('/tx-fees/:publicKey', txFeesPay)
 
 router
-.put('/ctrl-accounts/:ctrlAccount', ctrlAccountsHeal)
+.put('/trust/heal', healSourceAccount)
 
 // router
 // .get('/test', flushSingleUseAuthTokens)

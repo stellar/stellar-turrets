@@ -1,5 +1,6 @@
-import BigNumber from "bignumber.js";
-import { Keypair, Transaction, Networks } from "stellar-base";
+import BigNumber from 'bignumber.js';
+import { Keypair, Networks, Transaction } from 'stellar-base';
+
 /**
  * Verifies if a transaction was signed by the given account id.
  *
@@ -21,6 +22,24 @@ import { Keypair, Transaction, Networks } from "stellar-base";
  */
 export function verifyTxSignedBy(transaction, accountID) {
   return gatherTxSigners(transaction, [accountID]).length !== 0;
+}
+
+/**
+ * Fetch an account from the public key
+ *
+ * @param {string} publicKey
+ *
+ * @returns {Promise<any>} Account record
+ *
+ * @link https://developers.stellar.org/api/resources/accounts/object/
+ */
+export async function loadAccount(publicKey) {
+  try {
+    const accountInfo = await fetch(`${HORIZON_URL}/accounts/${pubkey}`);
+    return accountInfo.json();
+  } catch {
+    throw new Error(`Unable to fetch account with publicKey ${publicKey}`);
+  }
 }
 
 /**
@@ -56,12 +75,10 @@ export function gatherTxSigners(transaction, signers) {
     let keypair;
     try {
       keypair = Keypair.fromPublicKey(signer); // This can throw a few different errors
+    } catch (err) {
+      throw new Error('Signer is not a valid address: ' + err.message);
     }
-    catch (err) {
-      throw new Error("Signer is not a valid address: " + err.message);
-    }
-    for (let decSig of transaction.signatures)
-    {
+    for (let decSig of transaction.signatures) {
       if (!decSig.hint().equals(keypair.signatureHint())) {
         continue;
       }
@@ -74,15 +91,14 @@ export function gatherTxSigners(transaction, signers) {
   return Array.from(signersFound);
 }
 
-
 /**
  * Process a fee payment made to the Turret
- * 
+ *
  * @param {Object} env The current node env variables
  * @param {string} xdr The XDR of the fee payment to submit
  * @param {string | number} min The minimum fee payment amount
  * @param {string | number} max The maximum fee payment amount
- * 
+ *
  * @typedef {Object} PaymentResult
  * @property {string} hash The resultant hash of the TX
  * @property {string} amount The amount payed
@@ -91,68 +107,78 @@ export function gatherTxSigners(transaction, signers) {
  * @throws If the transaction is unable to be submitted for any reason
  */
 export async function processFeePayment(env, xdr, min, max) {
-  const { HORIZON_URL, STELLAR_NETWORK, TURRET_ADDRESS } = env
+  const { HORIZON_URL, STELLAR_NETWORK, TURRET_ADDRESS } = env;
 
-  const transaction = new Transaction(xdr, Networks[STELLAR_NETWORK])
-  const transactionHash = transaction.hash().toString('hex')
+  const transaction = new Transaction(xdr, Networks[STELLAR_NETWORK]);
+  const transactionHash = transaction.hash().toString('hex');
 
   if (transaction.operations.length !== 1) {
-    throw { message: `Fee payments cannot have more than one operation` }
+    throw { message: `Fee payments cannot have more than one operation` };
   }
 
   const op = transaction.operations[0];
-  if (op.type !== 'payment' || op.destination !== TURRET_ADDRESS || !op.asset.isNative()) {
-    throw { message: `Fee payments must be XLM payments made to ${TURRET_ADDRESS}` }
+  if (
+    op.type !== 'payment' ||
+    op.destination !== TURRET_ADDRESS ||
+    !op.asset.isNative()
+  ) {
+    throw {
+      message: `Fee payments must be XLM payments made to ${TURRET_ADDRESS}`,
+    };
   }
 
   if (min) {
     if (new BigNumber(op.amount).isLessThan(min)) {
-      throw { message: `Fee payment too low. Min = ${min}` }
+      throw { message: `Fee payment too low. Min = ${min}` };
     }
   }
 
   if (max) {
     if (new BigNumber(op.amount).isGreaterThan(max)) {
-      throw { message: `Fee payment too large. Max = ${max}` }
+      throw { message: `Fee payment too large. Max = ${max}` };
     }
   }
 
-  let submissionCheckResult = await fetch(`${HORIZON_URL}/transactions/${transactionHash}`);
+  let submissionCheckResult = await fetch(
+    `${HORIZON_URL}/transactions/${transactionHash}`
+  );
   if (submissionCheckResult.ok) {
-    throw { message: `Fee payment with hash ${transactionHash} has already been submitted` }
+    throw {
+      message: `Fee payment with hash ${transactionHash} has already been submitted`,
+    };
   } else if (submissionCheckResult.status === 404) {
     await processTransaction(HORIZON_URL, transaction);
     return {
       hash: transactionHash,
-      amount: op.amount
-    }
+      amount: op.amount,
+    };
   } else {
-    throw { message: `Error checking for fee payment` }
+    throw { message: `Error checking for fee payment` };
   }
 }
 
 /**
  * Process a transaction
- * 
+ *
  * @param {string} horizonUrl The Horizon endpoint to submit the tx to
  * @param {Transaction} transaction The transaction to submit
- * 
+ *
  * @returns {string} The resultant transaction hash.
  * @throws If the transaction failed to submit
  */
 async function processTransaction(horizonUrl, transaction) {
-  const xdr = transaction.toXDR()
+  const xdr = transaction.toXDR();
   const txBody = new FormData();
-  txBody.append('tx', xdr)
+  txBody.append('tx', xdr);
 
   let txResult = await fetch(`${horizonUrl}/transactions`, {
     method: 'POST',
-    body: txBody
+    body: txBody,
   });
   if (txResult.ok) {
-    let txResultBody = await txResult.json()
-    return txResultBody.hash
+    let txResultBody = await txResult.json();
+    return txResultBody.hash;
   } else {
-    throw { message: `Failed to submit transaction` }
+    throw { message: `Failed to submit transaction` };
   }
 }

@@ -1,8 +1,0 @@
-type: object
-properties:
-  message:
-    description: The error message
-    type: string
-  status:
-    description: The status code of the message
-    type: integer
