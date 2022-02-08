@@ -159,6 +159,10 @@ export async function heal(
       {
         fee: fee,
         networkPassphrase: Networks[STELLAR_NETWORK],
+        timebounds: {
+          maxTime: Math.floor(timestamp / 1000) + 5 * 60, // can be submitted until 5 minutes after given event timestamp
+          minTime: 0, // can be submitted immediately
+        },
       }
     ) // add the operation to add the new signer
       .addOperation(
@@ -190,7 +194,6 @@ export async function heal(
           value: null,
         })
       )
-      .setTimeout(timestamp + 5 * 60) // 5 minutes from event timestamp
       .build();
 
     // generate the signature
