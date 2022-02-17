@@ -86,15 +86,24 @@ export function checkLocalQuorum(turret) {
  * @param {string} oldTurret - the address of the turret that is being removed from the source account
  * @param {string} newTurret - the new turret to add to the source account
  * @param {string} functionHash - the hash of the function that is being healed
- * @returns {Promise<string>} The transaction XDR, the signer public key, and the signature.
+ * @param {number} timestamp - The heal event timestamp
+ * @param {string} userPublicKey - The publicKey / accountId of the user running heal
+ * @param {string} fee - The fee, in stroops, to use for the transaction
+ * @returns {Promise<any>} The transaction XDR, the signer public key, and the signature.
  */
-export async function heal(controlAccount, oldTurret, newTurret, functionHash) {
+export async function heal(
+  controlAccount,
+  oldTurret,
+  newTurret,
+  functionHash,
+  timestamp,
+  userPublicKey,
+  fee
+) {
   try {
     // check that the turret is not trying to heal itself
     if (newTurret === TURRET_ADDRESS || oldTurret === TURRET_ADDRESS) {
-      throw new Error(
-        'A Turret may not add or remove itself to a control account'
-      );
+      throw 'A Turret may not add or remove itself to a control account';
     }
 
     // check the local toml to validate the new turret is part of the trust quorum and the old turret is not
@@ -143,12 +152,17 @@ export async function heal(controlAccount, oldTurret, newTurret, functionHash) {
       throw `The new turret signer ${newSignerKey} is already a signer on controlAccount ${controlAccount}`;
     }
 
-    // create a new transaction for control account
+    // create a new transaction with the user as the source
+    const userAccountRecord = await loadAccount(userPublicKey);
     const transaction = new TransactionBuilder(
-      new Account(controlAccountRecord.id, controlAccountRecord.sequence),
+      new Account(userAccountRecord.id, userAccountRecord.sequence),
       {
-        fee: '10000',
+        fee: fee,
         networkPassphrase: Networks[STELLAR_NETWORK],
+        timebounds: {
+          maxTime: Math.floor(timestamp / 1000) + 5 * 60, // can be submitted until 5 minutes after given event timestamp
+          minTime: 0, // can be submitted immediately
+        },
       }
     ) // add the operation to add the new signer
       .addOperation(
@@ -180,7 +194,6 @@ export async function heal(controlAccount, oldTurret, newTurret, functionHash) {
           value: null,
         })
       )
-      .setTimeout(5 * 60)
       .build();
 
     // generate the signature
