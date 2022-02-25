@@ -1,11 +1,18 @@
 {
+  "name": "stellar-turrets-lambda",
+  "description": "Stellar Turrets Runner API Designed for AWS lambdas. Support on discord at https://discord.gg/s7Sc8JX6MS",
   "private": true,
-  "version": "0.0.1",
+  "version": "0.0.2",
+  "author": "Stellar Turrets Team",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/stellar/stellar-turrets/issues"
+  },
   "scripts": {
     "install": "npx envdist testnet",
     "build": "sls webpack",
     "deploy": "sls deploy",
-    "deploy:alpha": "sls deploy --stage alpha"
+    "deploy:public": "sls deploy --stage public"
   },
   "dependencies": {
     "bignumber.js": "^9.0.1",

@@ -16,29 +16,26 @@ import txFunctionsRun from './txFunctions/run'
 import txFeesGet from './txFees/get'
 import txFeesPay from './txFees/pay'
 
-import ctrlAccountsHeal from './ctrlAccounts/heal'
+import healControlAccount from './ctrlAccounts/heal'
 
 const router = new Router()
 
 router
-.get('/', turretDetails)
-.get('/.well-known/stellar.toml', turretToml)
+  .get('/', turretDetails)
+  .get('/.well-known/stellar.toml', turretToml)
 
 router
-.post('/tx-functions', txFunctionsUpload)
-.get('/tx-functions', txFunctionsList)
-.get('/tx-functions/:txFunctionHash', txFunctionsGet)
-.post('/tx-functions/:txFunctionHash', txFunctionsRun)
+  .post('/tx-functions', txFunctionsUpload)
+  .get('/tx-functions', txFunctionsList)
+  .get('/tx-functions/:txFunctionHash', txFunctionsGet)
+  .post('/tx-functions/:txFunctionHash', txFunctionsRun)
 
 router
-.get('/tx-fees', txFeesGet)
-.post('/tx-fees/:publicKey', txFeesPay)
+  .get('/tx-fees', txFeesGet)
+  .post('/tx-fees/:publicKey', txFeesPay)
 
 router
-.put('/ctrl-accounts/:ctrlAccount', ctrlAccountsHeal)
-
-// router
-// .get('/test', flushSingleUseAuthTokens)
+  .put('/ctrl-account', healControlAccount)
 
 async function handleRequest(request, env, ctx) {
   try {
@@ -57,16 +54,12 @@ async function handleRequest(request, env, ctx) {
         }
       })
 
-    // TODO: check and re-enable cache in production
+    if (method === 'GET') {
+       const cacheMatch = await cache.match(href)
 
-    // else if (method === 'GET') {
-    //   const cacheMatch = await cache.match(href)
-
-    //   if (cacheMatch)
-    //     return cacheMatch
-    // }
-
-    ////
+       if (cacheMatch)
+         return cacheMatch
+    }
 
     const routerMatch = router.match(method, pathname)
 
@@ -88,17 +81,17 @@ async function handleRequest(request, env, ctx) {
       return routerResponse
     }
 
-    throw {status: 404}
+    throw { status: 404 }
   }
 
-  catch(err) {
+  catch (err) {
     return parseError(err)
   }
 }
 
 function handleScheduled(metadata, env, ctx) {
   return Promise.all([
-    flushSingleUseAuthTokens({metadata, env, ctx})
+    flushSingleUseAuthTokens({ metadata, env, ctx })
   ])
 }
 

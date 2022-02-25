@@ -18,7 +18,7 @@ There are two apps you need to deploy one in [`/serverless](#AWS-serverless) and
 
 `npm install -g @cloudflare/wrangler` (you don't need a global install, but i find it convenient.)
 
-run `wrangler login` or `wrangler config`
+run `wrangler login` 
 
 For the next step you will need to have a number of values from your CloudFlare account. Some basic info on obtaining these values is below.
 
@@ -61,17 +61,17 @@ npm run init
 | [TESTNET_WRANGLER_XLM_FEE_MAX](#fees) | | 10 |
 | [TESTNET_WRANGLER_UPLOAD_DIVISOR](#fees) | | 1000 |
 | [TESTNET_WRANGLER_RUN_DIVISOR](#fees) | | 1000000 |
-| [ALPHA_HORIZON_URL](#horizon-url) | mainnet horizon url | `https://horizon.stellar.org` |
-| [ALPHA_TURRET_ADDRESS](#turret-address) | mainnet turret account pubkey | |
-| [ALPHA_TURRET_FUNCTION_RUNNER_URL](#turret-run-url) | the endpoint for your function runner [turret-run-url](#turret-run-url) | null |
-| [ALPHA_WRANGLER_WORKER_NAME](#worker-name) | mainnet worker name | tss |
-| [ALPHA_WRANGLER_META](#generating-kv-namespaces)  |[see generating kv namespaces](#generating-kv-namespaces) | |
-| [ALPHA_WRANGLER_TX_FUNCTIONS](#generating-kv-namespaces)  | | |
-| [ALPHA_WRANGLER_ALLOWED](#generating-kv-namespaces)  | The KV store for allowed  [see generating kv namespaces](#generating-kv-namespaces) | |
-| [ALPHA_WRANGLER_XLM_FEE_MIN](#fees) | the minimum fee to run a function in xlm | 1 |
-| [ALPHA_WRANGLER_XLM_FEE_MAX](#fees) | | 10 |
-| [ALPHA_WRANGLER_UPLOAD_DIVISOR](#fees) | | 1000 |
-| [ALPHA_WRANGLER_RUN_DIVISOR](#fees) | | 1000000 |
+| [PUBLIC_HORIZON_URL](#horizon-url) | mainnet horizon url | `https://horizon.stellar.org` |
+| [PUBLIC_TURRET_ADDRESS](#turret-address) | mainnet turret account pubkey | |
+| [PUBLIC_TURRET_FUNCTION_RUNNER_URL](#turret-run-url) | the endpoint for your function runner [turret-run-url](#turret-run-url) | null |
+| [PUBLIC_WRANGLER_WORKER_NAME](#worker-name) | mainnet worker name | tss |
+| [PUBLIC_WRANGLER_META](#generating-kv-namespaces)  |[see generating kv namespaces](#generating-kv-namespaces) | |
+| [PUBLIC_WRANGLER_TX_FUNCTIONS](#generating-kv-namespaces)  | | |
+| [PUBLIC_WRANGLER_ALLOWED](#generating-kv-namespaces)  | The KV store for allowed  [see generating kv namespaces](#generating-kv-namespaces) | |
+| [PUBLIC_WRANGLER_XLM_FEE_MIN](#fees) | the minimum fee to run a function in xlm | 1 |
+| [PUBLIC_WRANGLER_XLM_FEE_MAX](#fees) | | 10 |
+| [PUBLIC_WRANGLER_UPLOAD_DIVISOR](#fees) | | 1000 |
+| [PUBLIC_WRANGLER_RUN_DIVISOR](#fees) | | 1000000 |
 
 ### Generating KV Namespaces
 
@@ -83,9 +83,9 @@ $ npx wrangler kv:namespace create "TX_FUNCTIONS"
 
 Create the mainnet kvs:
 ```sh
-$ npx wrangler kv:namespace create "META" --env alpha
-$ npx wrangler kv:namespace create "TX_FUNCTIONS" --env alpha
-$ npx wrangler kv:namespace create "ALLOWED" --env alpha
+$ npx wrangler kv:namespace create "META" --env public
+$ npx wrangler kv:namespace create "TX_FUNCTIONS" --env public
+$ npx wrangler kv:namespace create "ALLOWED" --env public
 ```
 
 Each of those commands will spit out the string to provide in the init-step.
@@ -103,7 +103,7 @@ Each of those commands will spit out the string to provide in the init-step.
 ##### Worker Name
  - The name of your service on CloudFlare workers
 #### Todos
- - use a single env set instead of defaulting to testnet and alpha.
+ - use a single env set instead of defaulting to testnet and public.
  - add local install instructions.
  - make win32 compatable.
  - automate above process substantially.
@@ -156,8 +156,8 @@ $ npm run deploy
 To successfully run from within the `./serverless` directory.
 if you're going to deploy to mainnet:
 ```sh
-npx envdist alpha
-npm run deploy:alpha
+npx envdist public
+npm run deploy:public
 ```
 After you get it to build, you will be prompted for setting up your environmental variables for your .env:
 
@@ -178,7 +178,7 @@ The most probable issue will be you need to manually create an app in the [Serve
     - select "Serverless Framework"
     - name your app and service to match the name you've given it during deploy.
     - Select the aws credentials you've setup 
-    - now run `serverless deploy` for testnet or `serverless deploy --stage alpha` for pubnet
+    - now run `serverless deploy` for testnet or `serverless deploy --stage public` for pubnet
     - make sure you check the case of all 3 variables your org, app, and service.  they ARE Case sensitive
     - There's a helpful UI walk through they have so you should be able to sort it out. 
 
@@ -226,7 +226,7 @@ optional values are *italic* (i.e. will be using defaults if not set)
 
 ## Disclaimer
 
-This is alpha software representing a reference implementation for the [Stellar Turrets protocol](https://tss.stellar.org/).
+This is public software representing a reference implementation for the [Stellar Turrets protocol](https://tss.stellar.org/).
 
 For this reason I strongly suggest either:
 

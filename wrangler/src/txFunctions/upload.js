@@ -11,9 +11,11 @@ export default async ({ request, env }) => {
   const txFunctionFields = body.get('txFunctionFields')
   const txFunctionFieldsBuffer = txFunctionFields ? Buffer.from(txFunctionFields, 'base64') : Buffer.alloc(0)
 
-  // Test to ensure txFunctionFields is valid JSON
+   // Test to ensure txFunctionFields is valid JSON on upload.
   if (txFunctionFields)
-    JSON.parse(txFunctionFieldsBuffer.toString())
+    if (!JSON.parse(txFunctionFieldsBuffer.toString())){
+      throw 'json for txfunctionfields is not valid.'
+    }
 
   const txFunction = body.get('txFunction')
   const txFunctionBuffer = Buffer.from(txFunction)
@@ -42,8 +44,8 @@ export default async ({ request, env }) => {
   try {
     const txFunctionFee = body.get('txFunctionFee')
 
-    // throws if payment fails
-    await processFeePayment(env, txFunctionFee, cost);
+    // throws if payment fails, if the fee is invalid, if the fee is too large or too small. Fixes STRI 4
+    await processFeePayment(env, txFunctionFee, cost, cost);
 
   } catch (err) {
     return response.json({

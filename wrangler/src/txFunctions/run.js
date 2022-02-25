@@ -14,10 +14,11 @@ export default async ({ request, params, env }) => {
     TURRET_SIGNER, 
     STELLAR_NETWORK, 
     HORIZON_URL, 
-    RUN_DIVISOR 
+    RUN_DIVISOR,
+    SLS_TIMEOUT
   } = env
   const { txFunctionHash } = params
-
+  
   const { value, metadata } = await TX_FUNCTIONS.getWithMetadata(txFunctionHash, 'arrayBuffer')
 
   if (!value)
@@ -45,27 +46,45 @@ export default async ({ request, params, env }) => {
     && !authedContracts.some(hash => hash === txFunctionHash)
   ) throw { status: 403, message: `Not authorized to run contract with hash ${txFunctionHash}` }
 
-  const txFeesId = TX_FEES.idFromName(authedPublicKey)
-  const txFeesStub = TX_FEES.get(txFeesId)
+  const txFeesId = TX_FEES.idFromName(authedPublicKey);
+  const txFeesStub = TX_FEES.get(txFeesId);
 
   if (singleUse) { // If auth token is single use check if it's already been used
     await txFeesStub.fetch(`/${authedHash}`, {method: 'POST'}).then(handleResponse)
     await META.put(`suat:${authedPublicKey}:${authedHash}`, Buffer.alloc(0), {metadata: exp})
   }
 
-  const feeMetadata = await txFeesStub.fetch('/').then(handleResponse)
-  
+  const feeMetadata = await txFeesStub.fetch("/").then(handleResponse);
   let feeBalance
-  
+  const reserveFee = new BigNumber(SLS_TIMEOUT).dividedBy(RUN_DIVISOR).toFixed(7)
+
   if (feeMetadata) {
     feeBalance = new BigNumber(feeMetadata.balance)
-
-    if (feeBalance.isLessThanOrEqualTo(0)) {
-      throw { status: 402, message: `Turret fees have been spent for account ${authedPublicKey}` }
+    
+    if (feeBalance.isLessThanOrEqualTo( reserveFee )) {
+      throw {
+        status: 402,
+        message: `You must have a minimum balance of ${reserveFee}.  Current FeeBalance of ${authedPublicKey} is ${feeBalance}`,
+      }
     }
+    
+    const { balance: reserve } = await txFeesStub.fetch("/", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        minus: reserveFee,
+      }),
+    }).then(handleResponse);
+
+    console.log(`contract ran by authid: ${authedPublicKey}. 
+                   holding in reserve: ${reserveFee} XLM; 
+                   current bal is ${reserve}`)
+
   } else {
     throw { status: 402, message: `No payment was found for account ${authedPublicKey}` }
-  }
+  }   
 
   let { 
     value: turretAuthData, 
@@ -110,14 +129,14 @@ export default async ({ request, params, env }) => {
     watch.mark('Ran txFunction')
 
     const cost = new BigNumber(watch.getTotalTime()).dividedBy(RUN_DIVISOR).toFixed(7)
-
+    const settleFee = new BigNumber(reserveFee - cost).toFixed(7)
     const { balance: feeBalanceRemaining } = await txFeesStub.fetch('/', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        minus: cost
+        plus: settleFee
       })
     }).then(handleResponse)
 
@@ -153,20 +172,21 @@ export default async ({ request, params, env }) => {
       stopwatch: watch,
     })
   }
-
-  const transaction = new Transaction(xdr, Networks[STELLAR_NETWORK])
-
-  const txFunctionSignerKeypair = Keypair.fromSecret(txFunctionSignerSecret)
-  const txFunctionSignature = txFunctionSignerKeypair.sign(transaction.hash()).toString('base64')
-
-  return response.json({
-    xdr,
-    signer: txFunctionSignerPublicKey,
-    signature: txFunctionSignature,
-    cost,
-    feeSponsor,
-    feeBalanceRemaining,
-  }, {
-    stopwatch: watch,
-  })
+  try{
+    const transaction = new Transaction(xdr, Networks[STELLAR_NETWORK])
+    const txFunctionSignerKeypair = Keypair.fromSecret(txFunctionSignerSecret)
+    const txFunctionSignature = txFunctionSignerKeypair.sign(transaction.hash()).toString('base64')
+    return response.json({
+      xdr,
+      signer: txFunctionSignerPublicKey,
+      signature: txFunctionSignature,
+      cost,
+      feeSponsor,
+      feeBalanceRemaining,
+    }, {
+      stopwatch: watch,
+    })
+  } catch (e){
+      throw (`Unable to create valid transaction from XDR, ${e}`)
+  }  
 }
