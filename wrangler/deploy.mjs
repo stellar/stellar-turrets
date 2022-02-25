@@ -11,7 +11,7 @@ import path from "path";
 import {
     Keypair
 } from "stellar-base";
-import * as TOML from "@iarna/toml";
+import * as TOML from "toml";
 import fs from "fs";
 
 import {
