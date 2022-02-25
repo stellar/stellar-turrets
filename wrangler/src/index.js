@@ -37,9 +37,6 @@ router
 router
   .put('/ctrl-account', healControlAccount)
 
-// router
-// .get('/test', flushSingleUseAuthTokens)
-
 async function handleRequest(request, env, ctx) {
   try {
     const cache = caches.default
@@ -57,16 +54,12 @@ async function handleRequest(request, env, ctx) {
         }
       })
 
-    // TODO: check and re-enable cache in production
+    if (method === 'GET') {
+       const cacheMatch = await cache.match(href)
 
-    // else if (method === 'GET') {
-    //   const cacheMatch = await cache.match(href)
-
-    //   if (cacheMatch)
-    //     return cacheMatch
-    // }
-
-    ////
+       if (cacheMatch)
+         return cacheMatch
+    }
 
     const routerMatch = router.match(method, pathname)
 
