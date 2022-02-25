@@ -50,7 +50,8 @@ export default async ({ request, env }) => {
     txFunctionHash,
     timestamp,
     userAccountId,
-    fee
+    fee,
+    env
   );
   return response.json(healResponse);
 };
