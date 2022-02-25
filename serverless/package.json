@@ -12,7 +12,7 @@
     "install": "npx envdist testnet",
     "build": "sls webpack",
     "deploy": "sls deploy",
-    "deploy:alpha": "sls deploy --stage alpha"
+    "deploy:public": "sls deploy --stage public"
   },
   "dependencies": {
     "bignumber.js": "^9.0.1",

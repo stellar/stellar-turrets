@@ -46,9 +46,11 @@ export async function getHomeDomain(pubkey) {
 /**
  * It gets the signer for the TxFunction for the local turret.
  * @param {string} txFunctionHash - The hash of the TxFunction you want the signer for.
+ * @param {bindings} env - The cloudflare worker env.
  * @returns {Promise<string>} The function signer's public key.
  */
-export async function getLocalFunctionSigner(txFunctionHash) {
+export async function getLocalFunctionSigner(txFunctionHash, env) {
+  const { TX_FUNCTIONS } = env
   const { value, metadata } = await TX_FUNCTIONS.getWithMetadata(
     txFunctionHash,
     'arrayBuffer'
@@ -63,9 +65,10 @@ export async function getLocalFunctionSigner(txFunctionHash) {
 /**
  * This function checks the local toml to see if the turret address is trusted
  * @param turret - the address of the turret you want to check for trust
+ * @param {bindings} env - The cloudflare worker env.
  * @returns {boolean} A boolean value.
  */
-export function checkLocalQuorum(turret) {
+export function checkLocalQuorum(turret, env) {
   const localquorum = localtoml({ env });
   try {
     const thetoml = parse(localquorum).TURRETS;
@@ -98,20 +101,22 @@ export async function heal(
   functionHash,
   timestamp,
   userPublicKey,
-  fee
+  fee,
+  env
 ) {
   try {
+    const { TURRET_ADDRESS,  } = env
     // check that the turret is not trying to heal itself
     if (newTurret === TURRET_ADDRESS || oldTurret === TURRET_ADDRESS) {
       throw 'A Turret may not add or remove itself to a control account';
     }
 
     // check the local toml to validate the new turret is part of the trust quorum and the old turret is not
-    const newtrust = checkLocalQuorum(newTurret);
+    const newtrust = checkLocalQuorum(newTurret, env);
     if (!newtrust) {
       throw `The new turret is not trusted by the local turret quorum, make sure it is added to its toml`;
     }
-    const oldtrust = checkLocalQuorum(oldTurret);
+    const oldtrust = checkLocalQuorum(oldTurret, env);
     if (oldtrust) {
       throw `The old turret is still trusted by the local quorum and can't be removed`;
     }
@@ -157,7 +162,7 @@ export async function heal(
     const transaction = new TransactionBuilder(
       new Account(userAccountRecord.id, userAccountRecord.sequence),
       {
-        fee: fee,
+        fee,
         networkPassphrase: Networks[STELLAR_NETWORK],
         timebounds: {
           maxTime: Math.floor(timestamp / 1000) + 5 * 60, // can be submitted until 5 minutes after given event timestamp

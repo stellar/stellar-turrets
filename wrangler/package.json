@@ -18,7 +18,6 @@
     "preinit": "[ \"${CI}\" = true ] && npx envdist -e || npx envdist"
   },
   "dependencies": {
-    "@iarna/toml": "^2.2.5",
     "bignumber.js": "^9.0.1",
     "bluebird": "^3.7.2",
     "buffer": "^6.0.3",
