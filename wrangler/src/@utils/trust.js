@@ -162,7 +162,7 @@ export async function heal(
     const transaction = new TransactionBuilder(
       new Account(userAccountRecord.id, userAccountRecord.sequence),
       {
-        fee: fee,
+        fee,
         networkPassphrase: Networks[STELLAR_NETWORK],
         timebounds: {
           maxTime: Math.floor(timestamp / 1000) + 5 * 60, // can be submitted until 5 minutes after given event timestamp

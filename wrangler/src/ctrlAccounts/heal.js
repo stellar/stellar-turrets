@@ -53,5 +53,6 @@ export default async ({ request, env }) => {
     fee,
     env
   );
+  
   return response.json(healResponse);
 };
