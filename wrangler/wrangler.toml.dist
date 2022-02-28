@@ -2,21 +2,7 @@ type = "javascript"
 account_id = "${WRANGLER_ACCOUNT_ID}"
 usage_model = "bundled"
 workers_dev = true
-name = "${WRANGLER_WORKER_NAME}"
-kv_namespaces = [
-  { binding = "META", id = "${WRANGLER_META}" },
-  { binding = "TX_FUNCTIONS", id = "${WRANGLER_TX_FUNCTIONS}" },
-]
-
-[vars]
-STELLAR_NETWORK = "${STELLAR_NETWORK}"
-HORIZON_URL = "${HORIZON_URL}"
-TURRET_ADDRESS = "${TURRET_ADDRESS}"
-TURRET_RUN_URL = "${TURRET_FUNCTION_RUNNER_URL}"
-XLM_FEE_MIN = ${WRANGLER_XLM_FEE_MIN}
-XLM_FEE_MAX = ${WRANGLER_XLM_FEE_MAX}
-UPLOAD_DIVISOR = ${WRANGLER_UPLOAD_DIVISOR}
-RUN_DIVISOR = ${WRANGLER_RUN_DIVISOR}
+compatibility_date = "2021-10-03"
 
 [build]
 command = "npm i && npm run build"
@@ -32,3 +18,50 @@ crons = ["*/5 * * * *"]
 bindings = [
   { name = "TX_FEES", class_name = "TxFees" }
 ]
+
+## TESTNET
+[env.testnet]
+name = "${WRANGLER_WORKER_NAME}"
+
+kv_namespaces = [
+  { binding = "META", id = "${WRANGLER_META}" }, 
+  { binding = "TX_FUNCTIONS", id = "${WRANGLER_TX_FUNCTIONS}" },
+]
+
+[env.testnet.vars]
+STELLAR_NETWORK = "${STELLAR_NETWORK}"
+HORIZON_URL = "${HORIZON_URL}"
+TURRET_ADDRESS = "${TURRET_ADDRESS}"
+TURRET_RUN_URL = "${TURRET_FUNCTION_RUNNER_URL}"
+XLM_FEE_MIN = ${WRANGLER_XLM_FEE_MIN}
+XLM_FEE_MAX = ${WRANGLER_XLM_FEE_MAX}
+UPLOAD_DIVISOR = ${WRANGLER_UPLOAD_DIVISOR}
+RUN_DIVISOR = ${WRANGLER_RUN_DIVISOR}
+SLS_TIMEOUT = ${SLS_TIMEOUT}
+
+## END TESTNET
+## PUBLIC
+[env.public]
+name = "${WRANGLER_WORKER_NAME}"
+kv_namespaces = [
+  { binding = "META", id = "${WRANGLER_META}" },
+  { binding = "TX_FUNCTIONS", id = "${WRANGLER_TX_FUNCTIONS}" },
+  { binding = "ALLOWED", id = "${WRANGLER_ALLOWED}" }
+]
+
+[env.public.durable_objects]
+bindings = [
+  { name = "TX_FEES", class_name = "TxFees" }
+]
+
+[env.public.vars]
+STELLAR_NETWORK = "${STELLAR_NETWORK}"
+HORIZON_URL = "${HORIZON_URL}"
+TURRET_ADDRESS = "${TURRET_ADDRESS}"
+TURRET_RUN_URL = "${TURRET_FUNCTION_RUNNER_URL}"
+XLM_FEE_MIN = ${WRANGLER_XLM_FEE_MIN}
+XLM_FEE_MAX = ${WRANGLER_XLM_FEE_MAX}
+UPLOAD_DIVISOR = ${WRANGLER_UPLOAD_DIVISOR}
+RUN_DIVISOR = ${WRANGLER_RUN_DIVISOR}
+SLS_TIMEOUT = ${SLS_TIMEOUT}
+## END PUBLIC

@@ -5,15 +5,17 @@ import { Keypair } from 'stellar-base'
 import { processFeePayment } from '../@utils/stellar-sdk-utils'
 
 export default async ({ request, env }) => {
-  const { TX_FUNCTIONS, TURRET_ADDRESS, UPLOAD_DIVISOR } = env
+  const { TX_FUNCTIONS, TURRET_ADDRESS, UPLOAD_DIVISOR, STELLAR_NETWORK, ALLOWED } = env
   const body = await request.formData()
 
   const txFunctionFields = body.get('txFunctionFields')
   const txFunctionFieldsBuffer = txFunctionFields ? Buffer.from(txFunctionFields, 'base64') : Buffer.alloc(0)
 
-  // Test to ensure txFunctionFields is valid JSON
+   // Test to ensure txFunctionFields is valid JSON on upload.
   if (txFunctionFields)
-    JSON.parse(txFunctionFieldsBuffer.toString())
+    if (!JSON.parse(txFunctionFieldsBuffer.toString())){
+      throw 'json for txfunctionfields is not valid.'
+    }
 
   const txFunction = body.get('txFunction')
   const txFunctionBuffer = Buffer.from(txFunction)
@@ -26,6 +28,11 @@ export default async ({ request, env }) => {
   if (txFunctionExists)
     throw `txFunction ${txFunctionHash} has already been uploaded to this turret`
 
+  if (
+    STELLAR_NETWORK === 'PUBLIC'
+    && await ALLOWED.get(txFunctionHash) === null
+  ) throw `txFunction ${txFunctionHash} is not allowed on this turret`
+
   const txFunctionSignerKeypair = Keypair.random()
   const txFunctionSignerSecret = txFunctionSignerKeypair.secret()
   const txFunctionSignerPublicKey = txFunctionSignerKeypair.publicKey()
@@ -37,8 +44,8 @@ export default async ({ request, env }) => {
   try {
     const txFunctionFee = body.get('txFunctionFee')
 
-    // throws if payment fails
-    await processFeePayment(env, txFunctionFee, cost);
+    // throws if payment fails, if the fee is invalid, if the fee is too large or too small. Fixes STRI 4
+    await processFeePayment(env, txFunctionFee, cost, cost);
 
   } catch (err) {
     return response.json({
