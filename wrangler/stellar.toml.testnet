@@ -8,7 +8,7 @@ HOME_DOMAIN="stellar-turrets-testnet.script3.workers.dev"
 PUBLIC_KEY="GBN5WKCKLEDOXREUX5QWCJZIMMHJC2X4KK4FJS327PF3G3ED57A7GZSK"
 [[TURRETS]]
 NAME="matus-testnet"
-HOME_DOMAIN="stellar-turrets-testnet.sdf-ecosystem.workers.dev"
+HOME_DOMAIN="stellar-turrets-testnet.matusv.workers.dev"
 PUBLIC_KEY="GB4OYM7TQTJSROWXHOJLKAX2IJ2QN4I6S6GCJH4MGWVTAO5Q5DPNADXX"
 [[TURRETS]]
 NAME="task.io-testnet"
