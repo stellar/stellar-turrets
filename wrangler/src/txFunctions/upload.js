@@ -29,7 +29,8 @@ export default async ({ request, env }) => {
     throw `txFunction ${txFunctionHash} has already been uploaded to this turret`
 
   if (
-    STELLAR_NETWORK === 'PUBLIC'
+    ALLOWED
+    && STELLAR_NETWORK === 'PUBLIC'
     && await ALLOWED.get(txFunctionHash) === null
   ) throw `txFunction ${txFunctionHash} is not allowed on this turret`
 

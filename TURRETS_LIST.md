@@ -2,8 +2,7 @@
 
 | Turret URL | Company | Individual | Contact |
 | :- | :- | :- | :- |
-| https://stellar-turrets-testnet.sdf-ecosystem.workers.dev | | [Tyler van der Hoeven](https://tyvdh.com/) | hi@tyvdh.com |
-| https://stellar-turrets-testnet.script3.workers.dev | [Script3](https://www.script3.io/) | | |
+| https://testnet.stellarturrets.com | | [Tyler van der Hoeven](https://tyvdh.com/) | hi@tyvdh.com |
 | https://stellar-turrets-testnet.taskio.workers.dev | [Task.io](https://task.io/) | | |
 | https://stellar-turrets-testnet.soneso.workers.dev | [soneso](https://soneso.com/) | |hi@soneso.com|
 | https://stellar-turrets-testnet.turretsdao.workers.dev | [Turrets DAO](https://turretsdao.org/) | |hi@turretsdao.org|
@@ -29,8 +28,7 @@
 
 | Turret URL | Company | Individual | Contact |
 | :- | :- | :- | :- |
-| https://stellar-turrets-alpha.sdf-ecosystem.workers.dev | | [Tyler van der Hoeven](https://tyvdh.com/) | hi@tyvdh.com |
-| https://stellar-turrets-alpha.script3.workers.dev | [Script3](https://www.script3.io/) | | |
+| https://public.stellarturrets.com | | [Tyler van der Hoeven](https://tyvdh.com/) | hi@tyvdh.com |
 | https://stellar-turrets-alpha.taskio.workers.dev | [Task.io](https://task.io/) | | |
 | https://stellar-turrets-alpha.soneso.workers.dev | [soneso](https://soneso.com/) | |hi@soneso.com|
 | https://stellar-turrets.matusv.workers.dev | | [Matus Vojcik](https://github.com/matusv) | |
